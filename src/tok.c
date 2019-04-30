@@ -268,3 +268,26 @@ fail:
 
     return tok_count;
 }
+
+/**
+ * \brief Locates a substring in a string.
+ * 
+ * \note Source for the code is taken from https://stackoverflow.com/a/25705264/1632887.
+ * It's claimed to be licensed under "Creative Commons".
+ */
+char *nmea_strnstr(const char *haystack, const char *needle, int str_sz)
+{
+    int i;
+    size_t needle_len;
+    if(0 == (needle_len = strnlen(needle, str_sz)))
+        return (char *) haystack;
+
+    for(i = 0; i <= (int)(str_sz - needle_len); ++i)
+    {
+        if((haystack[0] == needle[0]) &&
+            (0 == strncmp(haystack, needle, needle_len)))
+            return (char*) haystack;
+        ++haystack;
+    }
+    return NULL;
+}
