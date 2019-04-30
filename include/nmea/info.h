@@ -82,6 +82,22 @@ typedef struct _nmeaSATINFO {
 } nmeaSATINFO;
 
 /**
+* Information about PTNL,AVR info.
+* @see nmeaInfo
+* @see nmeaPTNLAVR
+*/
+typedef struct _nmeaPTNLAVRINFO
+{
+  double   yaw;			/**< Yaw angle, in degrees*/
+  double   tilt;		/**< Tilt angle, in degrees*/
+  double   roll;		/**< Roll angle, in degrees*/
+  double   range;		/**< Range in meters (between antennas)*/
+  int      quality;		/**< GPS quality indicator. (0: Fix not available, 1: Autonomous GPS Fix,
+							2: Differential Carrier phase solution RTK(float), 3: Differential Carrier phase solution RTK(Fix),
+							4: Differential code-based solution DGPS)*/
+} nmeaPTNLAVRINFO;
+
+/**
  * Summary GPS information from all parsed packets,
  * used also for generating NMEA stream
  * @see nmea_parse
@@ -95,18 +111,22 @@ typedef struct _nmeaINFO {
 	int sig; /**< GPS quality indicator (0 = Invalid; 1 = Fix; 2 = Differential, 3 = Sensitive) */
 	int fix; /**< Operating mode, used for navigation (1 = Fix not available; 2 = 2D; 3 = 3D) */
 
-	double PDOP;        /**< Position Dilution Of Precision */
-	double HDOP;        /**< Horizontal Dilution Of Precision */
-	double VDOP;        /**< Vertical Dilution Of Precision */
+	double PDOP;             /**< Position Dilution Of Precision */
+	double HDOP;             /**< Horizontal Dilution Of Precision */
+	double VDOP;             /**< Vertical Dilution Of Precision */
 
-	double lat;         /**< Latitude in NDEG - +/-[degree][min].[sec/60] */
-	double lon;         /**< Longitude in NDEG - +/-[degree][min].[sec/60] */
-	double elv;         /**< Antenna altitude above/below mean sea level (geoid) in meters */
-	double speed;       /**< Speed over the ground in kilometers/hour */
-	double direction;   /**< Track angle in degrees True */
-	double declination; /**< Magnetic variation degrees (Easterly var. subtracts from true course) */
+	double lat;              /**< Latitude in NDEG - +/-[degree][min].[sec/60] */
+	double lon;              /**< Longitude in NDEG - +/-[degree][min].[sec/60] */
+	double elv;              /**< Antenna altitude above/below mean sea level (geoid) in meters */
+	double speed;            /**< Speed over the ground in kilometers/hour */
+	double direction;        /**< Track angle in degrees True */
+	double declination;      /**< Magnetic variation degrees (Easterly var. subtracts from true course) */
 
-	nmeaSATINFO satinfo; /**< Satellites information */
+	double heading;          /**< Heaging from the True North */
+
+	nmeaSATINFO satinfo;     /**< Satellites information */
+
+	nmeaPTNLAVRINFO avrInfo; /**< PTNL,AVR information */
 } nmeaINFO;
 
 /**
