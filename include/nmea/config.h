@@ -21,7 +21,12 @@
 #ifndef __NMEA_CONFIG_H__
 #define __NMEA_CONFIG_H__
 
+#if defined(_WIN32) || defined(_WIN64)
+#define NMEA_POSIX(x)  x  // paranthesis causes compile error on windows (mingw 5.3.3)
+#else 
 #define NMEA_POSIX(x)  (x)
+#endif
+
 #define NMEA_INLINE    inline
 
 #if !defined(NDEBUG)
