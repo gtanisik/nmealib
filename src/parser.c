@@ -79,8 +79,8 @@ void nmea_parser_destroy(nmeaPARSER *parser)
 {
     NMEA_ASSERT(parser);
     if (parser->buffer) {
-    	free(parser->buffer);
-    	parser->buffer = NULL;
+        free(parser->buffer);
+        parser->buffer = NULL;
     }
     nmea_parser_queue_clear(parser);
     memset(parser, 0, sizeof(nmeaPARSER));
@@ -123,6 +123,12 @@ int nmea_parse(
             break;
         case GPVTG:
             nmea_GPVTG2info((nmeaGPVTG *)pack, info);
+            break;
+        case PTNLAVR:
+            nmea_PTNLAVR2info((nmeaPTNLAVR *)pack, info);
+            break;
+        case GPHDT:
+            nmea_GPHDT2info((nmeaGPHDT *)pack, info);
             break;
         default:
             break;
@@ -244,6 +250,30 @@ int nmea_parser_real_push(nmeaPARSER *parser, const char *buff, int buff_sz)
                 if(!nmea_parse_GPVTG(
                     (const char *)parser->buffer + nparsed,
                     sen_sz, (nmeaGPVTG *)node->pack))
+                {
+                    free(node);
+                    node = 0;
+                }
+                break;
+            case PTNLAVR:
+                if(0 == (node->pack = malloc(sizeof(nmeaPTNLAVR))))
+                    goto mem_fail;
+                node->packType = PTNLAVR;
+                if(!nmea_parse_PTNLAVR(
+                    (const char *)parser->buffer + nparsed,
+                    sen_sz, (nmeaPTNLAVR *) node->pack))
+                {
+                    free(node);
+                    node = 0;
+                }
+                break;
+            case GPHDT:
+                if(0 == (node->pack = malloc(sizeof(nmeaGPHDT))))
+                    goto mem_fail;
+                node->packType = GPHDT;
+                if(!nmea_parse_GPHDT(
+                    (const char *)parser->buffer + nparsed,
+                    sen_sz, (nmeaGPHDT *) node->pack))
                 {
                     free(node);
                     node = 0;
