@@ -4,7 +4,17 @@ include Makefile.inc
 # Settings
 #
 
-LIBNAME = libnmea.so
+$(info OS is $(OS))
+
+ifeq ($(OS),Windows_NT)
+	PARAMS = -dir
+	SUFFIX = .dll
+else
+	PARAMS = -lc
+	SUFFIX = .so
+endif
+
+LIBNAME = libnmea$(SUFFIX)
 
 DESTDIR ?=
 
@@ -27,13 +37,13 @@ INCS = -I ./include
 # Targets
 #
 
-all: all-before lib/$(LIBNAME)
+all: all-before bin/$(LIBNAME)
 
 remake: clean all
 
-lib/$(LIBNAME): $(OBJ)
+bin/$(LIBNAME): $(OBJ)
 	@echo "[LD] $@"
-	@$(CC) -shared -Wl,-soname=$(LIBNAME) -o lib/$(LIBNAME) $(OBJ) -lc
+	@$(CC) -shared -Wl,-soname=$(LIBNAME) -o bin/$(LIBNAME) $(OBJ) $(PARAMS)
 
 build/%.o: src/%.c Makefile Makefile.inc
 	@echo "[CC] $<"
@@ -50,19 +60,19 @@ samples: all
 .PHONY: all-before clean doc install uninstall
 
 all-before:
-	@mkdir -p build lib
+	@mkdir -p build bin
 
 clean:
 	$(MAKE) -C doc clean
 	$(MAKE) -C samples clean
-	rm -fr build lib
+	rm -fr build bin
 
 doc:
 	$(MAKE) -C doc all
 
 install: all
 	@mkdir -v -p $(DESTDIR)/$(LIBDIR) $(DESTDIR)/$(INCLUDEDIR)
-	cp lib/$(LIBNAME) $(DESTDIR)/$(LIBDIR)/$(LIBNAME).$(VERSION)
+	cp bin/$(LIBNAME) $(DESTDIR)/$(LIBDIR)/$(LIBNAME).$(VERSION)
 	$(STRIP) $(DESTDIR)/$(LIBDIR)/$(LIBNAME).$(VERSION)
 	ldconfig -n $(DESTDIR)/$(LIBDIR)
 	@rm -fr $(DESTDIR)/$(INCLUDEDIR)/nmea
