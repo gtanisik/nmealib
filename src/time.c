@@ -29,7 +29,14 @@ void nmea_time_now(nmeaTIME *stm) {
 	struct tm tt;
 
 	gettimeofday(&tp, NULL);
-	gmtime_r(&tp.tv_sec, &tt);
+	
+#if (__STDC_VERSION__ >= 201112L) 
+	gmtime_s(&tt, &tp.tv_sec); // gmtime_s comes with c11
+#elif defined(_WIN32) || defined(_WIN64)
+	tt = *gmtime(&tp.tv_sec);  // we only have gmtime. it's not reentrant. thus, be careful!
+#else
+	gmtime_r(&tp.tv_sec, &tt); // linux has gmtime_r 
+#endif
 
 	stm->year = tt.tm_year;
 	stm->mon = tt.tm_mon;
