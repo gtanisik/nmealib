@@ -40,7 +40,7 @@ enum nmeaPACKTYPE
     GPGSA   = 0x0002,   /**< GSA - GPS receiver operating mode, SVs used for navigation, and DOP values. */
     GPGSV   = 0x0004,   /**< GSV - Number of SVs in view, PRN numbers, elevation, azimuth & SNR values. */
     GPRMC   = 0x0008,   /**< RMC - Recommended Minimum Specific GPS/TRANSIT Data. */
-    GPVTG   = 0x0010    /**< VTG - Actual track made good and speed over ground. */
+    GPVTG   = 0x0010,   /**< VTG - Actual track made good and speed over ground. */
     PTNLAVR = 0x0020,   /**< PTNL,AVR - Time, yaw, tilt/roll, range for moving baseline RTK. */
     GPHDT   = 0x0040,   /**< Heading from True North */
 };
