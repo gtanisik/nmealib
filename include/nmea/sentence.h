@@ -41,6 +41,8 @@ enum nmeaPACKTYPE
     GPGSV   = 0x0004,   /**< GSV - Number of SVs in view, PRN numbers, elevation, azimuth & SNR values. */
     GPRMC   = 0x0008,   /**< RMC - Recommended Minimum Specific GPS/TRANSIT Data. */
     GPVTG   = 0x0010    /**< VTG - Actual track made good and speed over ground. */
+    PTNLAVR = 0x0020,   /**< PTNL,AVR - Time, yaw, tilt/roll, range for moving baseline RTK. */
+    GPHDT   = 0x0040,   /**< Heading from True North */
 };
 
 /**
@@ -49,12 +51,12 @@ enum nmeaPACKTYPE
 typedef struct _nmeaGPGGA
 {
     nmeaTIME utc;       /**< UTC of position (just time) */
-	double  lat;        /**< Latitude in NDEG - [degree][min].[sec/60] */
+    double  lat;        /**< Latitude in NDEG - [degree][min].[sec/60] */
     char    ns;         /**< [N]orth or [S]outh */
-	double  lon;        /**< Longitude in NDEG - [degree][min].[sec/60] */
+    double  lon;        /**< Longitude in NDEG - [degree][min].[sec/60] */
     char    ew;         /**< [E]ast or [W]est */
     int     sig;        /**< GPS quality indicator (0 = Invalid; 1 = Fix; 2 = Differential, 3 = Sensitive) */
-	int     satinuse;   /**< Number of satellites in use (not those in view) */
+    int     satinuse;   /**< Number of satellites in use (not those in view) */
     double  HDOP;       /**< Horizontal dilution of precision */
     double  elv;        /**< Antenna altitude above/below mean sea level (geoid) */
     char    elv_units;  /**< [M]eters (Antenna height unit) */
@@ -126,11 +128,39 @@ typedef struct _nmeaGPVTG
 
 } nmeaGPVTG;
 
+/**
+* PTNL,AVR package information structure (Time, yaw, tilt/roll, range for moving baseline RTK.)
+*/
+typedef struct _nmeaPTNLAVR
+{
+	nmeaTIME utc;        /**< UTC of vector fix */
+	double   yaw;		 /**< Yaw angle, in degrees*/
+	double   tilt;       /**< Tilt angle, in degrees*/
+	double   roll;       /**< Roll angle, in degrees*/
+	double   range;		 /**< Range in meters*/
+	int      quality;	 /**< GPS quality indicator. (0: Fix not available, 1: Autonomous GPS Fix, 
+						  2: Differential Carrier phase solution RTK(float), 3: Differential Carrier phase solution RTK(Fix),
+						  4: Differential code-based solution DGPS)*/
+	double   pdop;		 /**< Position Dilution of Precision of current. Indicates three dimensional geometry of the satellites.*/
+	int      sat_count;  /**< Satellite count. */
+} nmeaPTNLAVR;
+
+/**
+* GPHDT package information structure ( Heading from true north)
+*/
+typedef struct _nmeaGPHDT
+{
+	double heading;      /**< in degrees*/
+	char T;              /**< Expected value: 'T' */
+} nmeaGPHDT;
+
 void nmea_zero_GPGGA(nmeaGPGGA *pack);
 void nmea_zero_GPGSA(nmeaGPGSA *pack);
 void nmea_zero_GPGSV(nmeaGPGSV *pack);
 void nmea_zero_GPRMC(nmeaGPRMC *pack);
 void nmea_zero_GPVTG(nmeaGPVTG *pack);
+void nmea_zero_PTNLAVR(nmeaPTNLAVR *pack);
+void nmea_zero_GPHDT(nmeaGPHDT *pack);
 
 #ifdef  __cplusplus
 }
