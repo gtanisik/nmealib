@@ -62,3 +62,15 @@ void nmea_zero_GPVTG(nmeaGPVTG *pack)
     pack->spn_n = 'N';
     pack->spk_k = 'K';
 }
+
+void nmea_zero_PTNLAVR(nmeaPTNLAVR *pack)
+{
+    memset(pack, 0, sizeof(nmeaPTNLAVR));
+    nmea_time_now(&pack->utc);
+}
+
+void nmea_zero_GPHDT(nmeaGPHDT *pack)
+{
+    memset(pack, 0, sizeof(nmeaGPHDT));
+    pack->T = 'T';
+}
