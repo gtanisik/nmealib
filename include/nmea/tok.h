@@ -30,6 +30,7 @@ int nmea_atoi(const char *str, int str_sz, int radix);
 double nmea_atof(const char *str, int str_sz);
 int nmea_printf(char *buff, int buff_sz, const char *format, ...);
 int nmea_scanf(const char *buff, int buff_sz, const char *format, ...);
+char *nmea_strnstr(const char *haystack, const char *needle, int str_sz);
 
 #ifdef  __cplusplus
 }
